@@ -1,0 +1,70 @@
+{
+  "rows": [
+    {
+      "row": 0,
+      "ofi_l1": null,
+      "tvi": 0,
+      "mid_price": 10025.0,
+      "reason": "First row has no prior book"
+    },
+    {
+      "row": 1,
+      "ofi_l1": -50.0,
+      "tvi": 0,
+      "mid_price": 10025.0,
+      "reason": "Ask size increased by 50 at same price"
+    },
+    {
+      "row": 2,
+      "ofi_l1": 80.0,
+      "tvi": 0,
+      "mid_price": 10030.0,
+      "reason": "Bid price increased, new bid size 80 added"
+    },
+    {
+      "row": 3,
+      "ofi_l1": -80.0,
+      "tvi": -80.0,
+      "mid_price": 10025.0,
+      "reason": "Bid price decreased, prev bid size 80 subtracted; Visible execution against resting buy -> seller initiated"
+    },
+    {
+      "row": 4,
+      "ofi_l1": -60.0,
+      "tvi": 0,
+      "mid_price": 10020.0,
+      "reason": "Ask price decreased, new ask size 60 subtracted"
+    },
+    {
+      "row": 5,
+      "ofi_l1": 20.0,
+      "tvi": 0,
+      "mid_price": 10020.0,
+      "reason": "Ask size decreased by 20 at same price -> +20"
+    },
+    {
+      "row": 6,
+      "ofi_l1": 40.0,
+      "tvi": 40.0,
+      "mid_price": 10025.0,
+      "reason": "Ask price increased, prev ask size 40 added; Execution against resting sell -> buyer initiated"
+    }
+  ],
+  "time_buckets_1s": {
+    "34200": {
+      "ofi_sum": -50.0,
+      "tvi_sum": -80.0,
+      "last_mid": 10025.0
+    },
+    "34201": {
+      "ofi_sum": -40.0,
+      "tvi_sum": 0.0,
+      "last_mid": 10020.0
+    },
+    "34202": {
+      "ofi_sum": 40.0,
+      "tvi_sum": 40.0,
+      "last_mid": 10025.0
+    }
+  }
+}

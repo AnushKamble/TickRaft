@@ -1,0 +1,11 @@
+{
+  "dataset_id": "demo-dataset-synth",
+  "export_time": "2026-10-24T10:16:11Z",
+  "event_count": 16,
+  "seq_start": 1,
+  "seq_end": 16,
+  "rolling_digest": "a1b78358a8f5ed576dc05a499632c1f0aaf42bd2cc3bf3088361eaa503ecae24",
+  "export_file": "demo-dataset-synth_committed_replay.csv",
+  "export_file_sha256": "11c76b128750a42828fa8d0a3177b259c9166a2ca3ecee09f61c5981cdab0f5e",
+  "source_manifest_hash": ""
+}

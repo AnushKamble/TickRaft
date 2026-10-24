@@ -1,0 +1,135 @@
+syntax = "proto3";
+
+package marketlog;
+
+option go_package = "tickraft/proto/marketlog;marketlogpb";
+
+// Canonical limit order book level
+message OrderBookLevel {
+  int64 price = 1; // Integer fixed-point price
+  uint64 size = 2; // Quantity/shares at level
+}
+
+// Canonical order book snapshot at L levels
+message OrderBookSnapshot {
+  repeated OrderBookLevel asks = 1; // Ask levels in ascending price order
+  repeated OrderBookLevel bids = 2; // Bid levels in descending price order
+}
+
+// Canonical normalized market data event
+message MarketEvent {
+  uint64 source_seq = 1;       // Contiguous 1-based source event sequence number
+  int64 timestamp_ns = 2;      // Exact nanoseconds from midnight
+  uint32 event_type = 3;       // 1=Submission, 2=Cancellation, 3=Deletion, 4=Visible Exec, 5=Hidden Exec, 6=Cross/Auction, 7=Trading Halt
+  uint64 order_id = 4;         // Unique order identification
+  uint64 size = 5;             // Number of shares
+  int64 price = 6;             // Fixed-point integer price
+  int32 direction = 7;         // -1 = Sell limit order resting; 1 = Buy limit order resting
+  OrderBookSnapshot book = 8;  // Post-event order book state
+}
+
+// Raft command to initiate a dataset session
+message BeginDatasetCommand {
+  string dataset_id = 1;
+  string symbol = 2;
+  string session_date = 3;
+  uint64 expected_events = 4;
+  uint32 levels = 5;
+  string source_manifest_hash = 6;
+  string schema_version = 7;
+}
+
+// Raft command to append a bounded batch of market events
+message AppendEventBatchCommand {
+  string batch_id = 1;               // Stable unique batch ID
+  string dataset_id = 2;
+  uint64 batch_seq = 3;              // Monotonic batch sequence (1, 2, ...)
+  uint64 seq_start = 4;              // First event source_seq in batch
+  uint64 seq_end = 5;                // Last event source_seq in batch
+  string payload_hash = 6;           // Deterministic SHA-256 of batch payload
+  repeated MarketEvent events = 7;
+}
+
+// Raft command to finalize and verify a dataset
+message FinalizeDatasetCommand {
+  string dataset_id = 1;
+  uint64 expected_events = 2;
+  uint64 final_seq = 3;
+  string expected_rolling_digest = 4;
+  string source_manifest_hash = 5;
+}
+
+// Envelope for any state machine command in Raft log
+message StateMachineCommand {
+  enum CommandType {
+    UNKNOWN = 0;
+    BEGIN_DATASET = 1;
+    APPEND_BATCH = 2;
+    FINALIZE_DATASET = 3;
+  }
+  CommandType type = 1;
+  bytes payload = 2; // Serialized protobuf corresponding to type
+}
+
+// Client RPC requests and responses
+message ProposeBatchRequest {
+  AppendEventBatchCommand command = 1;
+}
+
+message ProposeBatchResponse {
+  bool success = 1;
+  string error_message = 2;
+  string leader_hint = 3;
+  uint64 committed_index = 4;
+  string batch_id = 5;
+  bool is_duplicate = 6;
+}
+
+message DatasetCommandRequest {
+  StateMachineCommand command = 1;
+}
+
+message DatasetCommandResponse {
+  bool success = 1;
+  string error_message = 2;
+  string leader_hint = 3;
+  uint64 committed_index = 4;
+}
+
+message ClusterStatusRequest {
+  string node_id = 1;
+}
+
+message ClusterStatusResponse {
+  string node_id = 1;
+  string role = 2; // LEADER, FOLLOWER, CANDIDATE
+  uint64 term = 3;
+  string leader_id = 4;
+  uint64 commit_index = 5;
+  uint64 last_applied = 6;
+  uint64 event_count = 7;
+  string last_applied_digest = 8;
+  string status_error = 9;
+}
+
+message ExportCommittedRequest {
+  string dataset_id = 1;
+  uint64 start_seq = 2;
+  uint64 end_seq = 3;
+}
+
+message ExportCommittedResponse {
+  string dataset_id = 1;
+  uint64 event_count = 2;
+  uint64 seq_start = 3;
+  uint64 seq_end = 4;
+  string rolling_digest = 5;
+  repeated MarketEvent events = 6;
+}
+
+service MarketLogService {
+  rpc ProposeBatch(ProposeBatchRequest) returns (ProposeBatchResponse);
+  rpc ExecuteDatasetCommand(DatasetCommandRequest) returns (DatasetCommandResponse);
+  rpc GetClusterStatus(ClusterStatusRequest) returns (ClusterStatusResponse);
+  rpc ExportCommitted(ExportCommittedRequest) returns (ExportCommittedResponse);
+}
