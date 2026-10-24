@@ -99,7 +99,7 @@ func TestExportManifestVerification(t *testing.T) {
 	}
 
 	// Parse synthetic fixtures
-	events, _, _, err := marketlog.ParseLOBSTERFiles(msgPath, bookPath, 5)
+	events, msgHash, bookHash, err := marketlog.ParseLOBSTERFiles(msgPath, bookPath, 5)
 	if err != nil {
 		t.Fatalf("failed to parse synthetic fixture: %v", err)
 	}
@@ -109,6 +109,20 @@ func TestExportManifestVerification(t *testing.T) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
+	expectedSourceHash := msgHash + ":" + bookHash
+	beginCmd := &marketlogpb.BeginDatasetCommand{
+		DatasetId:          "synth-verif-ds",
+		Symbol:             "SYNTH",
+		SessionDate:        "2026-10-24",
+		ExpectedEvents:     uint64(len(events)),
+		Levels:             5,
+		SourceManifestHash: expectedSourceHash,
+		SchemaVersion:      "v1",
+	}
+	if err := client.BeginDataset(ctx, beginCmd); err != nil {
+		t.Fatalf("failed to begin dataset: %v", err)
+	}
 
 	// Propose all events in batches of 4
 	batchSize := 4
@@ -149,5 +163,9 @@ func TestExportManifestVerification(t *testing.T) {
 
 	if expResp.RollingDigest != expectedDigest {
 		t.Fatalf("rolling digest mismatch: exported %s, expected %s", expResp.RollingDigest, expectedDigest)
+	}
+
+	if expResp.SourceManifestHash != expectedSourceHash {
+		t.Fatalf("source manifest hash mismatch: exported %s, expected %s", expResp.SourceManifestHash, expectedSourceHash)
 	}
 }

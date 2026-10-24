@@ -125,6 +125,8 @@ message ExportCommittedResponse {
   uint64 seq_end = 4;
   string rolling_digest = 5;
   repeated MarketEvent events = 6;
+  string source_manifest_hash = 7;
+  bool is_finalized = 8;
 }
 
 service MarketLogService {

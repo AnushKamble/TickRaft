@@ -23,6 +23,10 @@ func main() {
 	clusterAddrsFlag := flag.String("cluster-addrs", "127.0.0.1:50051,127.0.0.1:50052,127.0.0.1:50053", "Comma-separated cluster addresses")
 	flag.Parse()
 
+	if *batchSize <= 0 || *batchSize > marketlog.MaxEventsPerBatch {
+		log.Fatalf("Invalid batch-size %d: must be between 1 and %d", *batchSize, marketlog.MaxEventsPerBatch)
+	}
+
 	log.Printf("[TickRaft-Import] Parsing input files %s and %s...", *msgPath, *bookPath)
 	events, msgHash, bookHash, err := marketlog.ParseLOBSTERFiles(*msgPath, *bookPath, *levels)
 	if err != nil {

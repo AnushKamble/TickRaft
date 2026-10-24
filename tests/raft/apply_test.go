@@ -149,3 +149,48 @@ func TestClientWaitersOnApply(t *testing.T) {
 		t.Fatalf("client proposal waiter timed out")
 	}
 }
+
+// TestPostStopRPCSafety verifies regression fix for FINDING-RAFT-01:
+// RPCs and status calls on a stopped node must not deadlock.
+func TestPostStopRPCSafety(t *testing.T) {
+	net := simulator.NewSimNetwork(42)
+	cfg := raft.NodeConfig{
+		ID:                 "node-stopped",
+		Peers:              []string{"node-other"},
+		ElectionTimeoutMin: 150 * 1_000_000,
+		ElectionTimeoutMax: 300 * 1_000_000,
+		HeartbeatInterval:  50 * 1_000_000,
+	}
+
+	node, err := raft.NewRaftNode(cfg, raft.NewMemoryStorage(), net, nil, 10)
+	if err != nil {
+		t.Fatalf("failed to create node: %v", err)
+	}
+
+	// Stop node
+	node.Stop()
+
+	// Calling HandleRequestVote must return immediately without blocking
+	rvResp := node.HandleRequestVote(&raftpb.RequestVoteRequest{
+		Term:        5,
+		CandidateId: "node-other",
+	})
+	if rvResp == nil || rvResp.VoteGranted {
+		t.Fatalf("stopped node should not grant vote: got %v", rvResp)
+	}
+
+	// Calling HandleAppendEntries must return immediately without blocking
+	aeResp := node.HandleAppendEntries(&raftpb.AppendEntriesRequest{
+		Term:     5,
+		LeaderId: "node-other",
+	})
+	if aeResp == nil || aeResp.Success {
+		t.Fatalf("stopped node should reject append entries: got %v", aeResp)
+	}
+
+	// Calling GetStatus must return immediately without blocking
+	st := node.GetStatus()
+	if st.ID != "node-stopped" {
+		t.Fatalf("unexpected node ID from GetStatus: %s", st.ID)
+	}
+}

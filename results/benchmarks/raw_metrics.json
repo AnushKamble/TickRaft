@@ -4,51 +4,51 @@
     "arch": "amd64",
     "num_cpu": 32,
     "go_version": "go1.27.0",
-    "timestamp": "2026-10-24T10:16:35Z"
+    "timestamp": "2026-10-24T10:43:31Z"
   },
   "direct_replay": {
     "total_events": 3000,
     "duration_ms": 13,
-    "events_per_sec": 216512.70207852195
+    "events_per_sec": 217926.6458909931
   },
   "replicated_runs": [
     {
       "batch_size": 100,
       "total_events": 3000,
       "total_batches": 30,
-      "duration_ms": 97,
-      "events_per_sec": 30675.442569947678,
-      "batches_per_sec": 306.75442569947677,
-      "latency_mean_ms": 3.1653333333333338,
-      "latency_p50_ms": 3.029,
-      "latency_p95_ms": 3.918,
-      "latency_p99_ms": 4.817,
+      "duration_ms": 96,
+      "events_per_sec": 31145.56502726794,
+      "batches_per_sec": 311.4556502726794,
+      "latency_mean_ms": 3.1229,
+      "latency_p50_ms": 2.961,
+      "latency_p95_ms": 4.127,
+      "latency_p99_ms": 4.795,
       "total_wal_bytes": 524214
     },
     {
       "batch_size": 500,
       "total_events": 3000,
       "total_batches": 6,
-      "duration_ms": 2841,
-      "events_per_sec": 1055.9033975099687,
-      "batches_per_sec": 2.1118067950199375,
-      "latency_mean_ms": 473.04433333333327,
-      "latency_p50_ms": 8.671,
-      "latency_p95_ms": 2797.104,
-      "latency_p99_ms": 2797.104,
+      "duration_ms": 443,
+      "events_per_sec": 6758.89859692024,
+      "batches_per_sec": 13.51779719384048,
+      "latency_mean_ms": 73.80116666666667,
+      "latency_p50_ms": 7.289,
+      "latency_p95_ms": 409.351,
+      "latency_p99_ms": 409.351,
       "total_wal_bytes": 514764
     },
     {
       "batch_size": 1000,
       "total_events": 3000,
       "total_batches": 3,
-      "duration_ms": 41,
-      "events_per_sec": 72034.00004802266,
-      "batches_per_sec": 72.03400004802266,
-      "latency_mean_ms": 12.442,
-      "latency_p50_ms": 12.452,
-      "latency_p95_ms": 13.798,
-      "latency_p99_ms": 13.798,
+      "duration_ms": 31,
+      "events_per_sec": 96676.89293356365,
+      "batches_per_sec": 96.67689293356365,
+      "latency_mean_ms": 9.602666666666666,
+      "latency_p50_ms": 9.508,
+      "latency_p95_ms": 9.905,
+      "latency_p99_ms": 9.905,
       "total_wal_bytes": 513588
     }
   ]

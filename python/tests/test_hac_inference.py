@@ -43,3 +43,25 @@ def test_lag_sensitivity_analysis():
     for entry in sensitivity:
         assert entry["lag"] in lags
         assert "coefficients" in entry
+
+
+def test_hac_collinear_and_nan_sanitization():
+    import json
+    # Collinear X where two columns are identical
+    n = 30
+    x1 = np.ones((n, 1))
+    x2 = np.ones((n, 1))
+    X = np.hstack([x1, x2])
+    y = np.ones(n) * 5.0  # Constant target
+
+    res = fit_ols_with_hac(X, y, max_lags=2, feature_names=["col1", "col2"])
+
+    # Must be valid json without NaN / +/-Infinity
+    json_str = json.dumps(res)
+    loaded = json.loads(json_str)
+
+    assert loaded["nobs"] == n
+    assert isinstance(loaded["r2_in_sample"], (int, float))
+    assert not np.isnan(loaded["r2_in_sample"])
+    assert not np.isinf(loaded["aic"])
+    assert not np.isinf(loaded["bic"])

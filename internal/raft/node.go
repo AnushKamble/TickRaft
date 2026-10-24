@@ -267,21 +267,72 @@ func (n *RaftNode) SubmitProposal(ctx context.Context, data []byte) (ClientPropo
 }
 
 func (n *RaftNode) HandleRequestVote(req *raftpb.RequestVoteRequest) *raftpb.RequestVoteResponse {
+	n.mu.RLock()
+	if n.stopped {
+		term := n.currentTerm
+		n.mu.RUnlock()
+		return &raftpb.RequestVoteResponse{
+			Term:        term,
+			VoteGranted: false,
+		}
+	}
+	n.mu.RUnlock()
+
 	reply := make(chan *raftpb.RequestVoteResponse, 1)
-	n.msgChan <- requestVoteRPCMsg{req: req, reply: reply}
-	return <-reply
+	select {
+	case n.msgChan <- requestVoteRPCMsg{req: req, reply: reply}:
+		return <-reply
+	case <-n.stopChan:
+		return &raftpb.RequestVoteResponse{
+			Term:        n.currentTerm,
+			VoteGranted: false,
+		}
+	}
 }
 
 func (n *RaftNode) HandleAppendEntries(req *raftpb.AppendEntriesRequest) *raftpb.AppendEntriesResponse {
+	n.mu.RLock()
+	if n.stopped {
+		term := n.currentTerm
+		n.mu.RUnlock()
+		return &raftpb.AppendEntriesResponse{
+			Term:    term,
+			Success: false,
+		}
+	}
+	n.mu.RUnlock()
+
 	reply := make(chan *raftpb.AppendEntriesResponse, 1)
-	n.msgChan <- appendEntriesRPCMsg{req: req, reply: reply}
-	return <-reply
+	select {
+	case n.msgChan <- appendEntriesRPCMsg{req: req, reply: reply}:
+		return <-reply
+	case <-n.stopChan:
+		return &raftpb.AppendEntriesResponse{
+			Term:    n.currentTerm,
+			Success: false,
+		}
+	}
 }
 
 func (n *RaftNode) GetStatus() NodeStatus {
+	n.mu.RLock()
+	if n.stopped {
+		status := n.getStatus()
+		n.mu.RUnlock()
+		return status
+	}
+	n.mu.RUnlock()
+
 	reply := make(chan NodeStatus, 1)
-	n.msgChan <- statusQueryMsg{reply: reply}
-	return <-reply
+	select {
+	case n.msgChan <- statusQueryMsg{reply: reply}:
+		return <-reply
+	case <-n.stopChan:
+		n.mu.RLock()
+		status := n.getStatus()
+		n.mu.RUnlock()
+		return status
+	}
 }
 
 func (n *RaftNode) getStatus() NodeStatus {

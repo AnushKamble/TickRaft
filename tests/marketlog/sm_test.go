@@ -228,3 +228,46 @@ func TestFinalizeDataset(t *testing.T) {
 		t.Fatalf("expected ErrDatasetAlreadyFinalized, got: %v", errPost)
 	}
 }
+
+func TestBatchSizeLimits(t *testing.T) {
+	sm := marketlog.NewMarketLogStateMachine()
+
+	beginCmd := &marketlogpb.BeginDatasetCommand{
+		DatasetId: "d-batchsize",
+	}
+	bBytes, _ := marketlog.EncodeStateMachineCommand(marketlogpb.StateMachineCommand_BEGIN_DATASET, beginCmd)
+	_, _ = sm.Apply(&raftpb.LogEntry{Index: 1, Term: 1, Data: bBytes})
+
+	// 1. Empty batch must be rejected
+	emptyCmd := &marketlogpb.AppendEventBatchCommand{
+		BatchId:  "b-empty",
+		SeqStart: 1,
+		SeqEnd:   1,
+		Events:   nil,
+	}
+	eBytes, _ := marketlog.EncodeStateMachineCommand(marketlogpb.StateMachineCommand_APPEND_BATCH, emptyCmd)
+	_, errEmpty := sm.Apply(&raftpb.LogEntry{Index: 2, Term: 1, Data: eBytes})
+	if !errors.Is(errEmpty, marketlog.ErrInvalidBatchSize) {
+		t.Fatalf("expected ErrInvalidBatchSize for empty batch, got: %v", errEmpty)
+	}
+
+	// 2. Oversized batch (>10,000) must be rejected
+	oversized := make([]*marketlogpb.MarketEvent, marketlog.MaxEventsPerBatch+1)
+	for i := range oversized {
+		oversized[i] = &marketlogpb.MarketEvent{
+			SourceSeq:   uint64(i + 1),
+			TimestampNs: int64(1000 + i),
+		}
+	}
+	overCmd := &marketlogpb.AppendEventBatchCommand{
+		BatchId:  "b-over",
+		SeqStart: 1,
+		SeqEnd:   uint64(len(oversized)),
+		Events:   oversized,
+	}
+	oBytes, _ := marketlog.EncodeStateMachineCommand(marketlogpb.StateMachineCommand_APPEND_BATCH, overCmd)
+	_, errOver := sm.Apply(&raftpb.LogEntry{Index: 3, Term: 1, Data: oBytes})
+	if !errors.Is(errOver, marketlog.ErrInvalidBatchSize) {
+		t.Fatalf("expected ErrInvalidBatchSize for oversized batch, got: %v", errOver)
+	}
+}

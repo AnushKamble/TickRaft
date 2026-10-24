@@ -137,11 +137,13 @@ func (s *MarketLogServiceServer) ExportCommitted(
 	events := s.sm.GetCommittedEvents(req.StartSeq, req.EndSeq)
 
 	return &marketlogpb.ExportCommittedResponse{
-		DatasetId:     manifest.DatasetID,
-		EventCount:    uint64(len(events)),
-		SeqStart:      manifest.SeqStart,
-		SeqEnd:        manifest.SeqEnd,
-		RollingDigest: manifest.RollingDigest,
-		Events:        events,
+		DatasetId:          manifest.DatasetID,
+		EventCount:         uint64(len(events)),
+		SeqStart:           manifest.SeqStart,
+		SeqEnd:             manifest.SeqEnd,
+		RollingDigest:      manifest.RollingDigest,
+		Events:             events,
+		SourceManifestHash: manifest.SourceManifestHash,
+		IsFinalized:        manifest.IsFinalized,
 	}, nil
 }

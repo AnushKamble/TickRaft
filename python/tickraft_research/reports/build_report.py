@@ -31,12 +31,16 @@ def run_research_pipeline(
 
     # 1. Read manifest and verify provenance
     manifest_data = {}
+    manifest_verified = False
     if manifest_path.exists():
         with open(manifest_path, "r") as f:
             manifest_data = json.load(f)
+        manifest_verified = bool(manifest_data.get("source_manifest_hash") and manifest_data.get("rolling_digest"))
 
     # 2. Parse committed replay CSV
     df = pl.read_csv(export_csv)
+    if manifest_data and "event_count" in manifest_data:
+        assert len(df) == manifest_data["event_count"], f"Row count mismatch: CSV {len(df)} != manifest {manifest_data['event_count']}"
 
     # Add features if not present
     if "ofi_l1" not in df.columns:
@@ -98,6 +102,7 @@ def run_research_pipeline(
     summary_path = output_dir / "research_summary.json"
     full_output = {
         "dataset_manifest": manifest_data,
+        "manifest_verified": manifest_verified,
         "parameters": {
             "horizons": horizons,
             "train_ratio": train_ratio,

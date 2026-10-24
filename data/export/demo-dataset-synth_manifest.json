@@ -1,11 +1,11 @@
 {
   "dataset_id": "demo-dataset-synth",
-  "export_time": "2026-10-24T10:16:11Z",
+  "export_time": "2026-10-24T10:44:23Z",
   "event_count": 16,
   "seq_start": 1,
   "seq_end": 16,
   "rolling_digest": "a1b78358a8f5ed576dc05a499632c1f0aaf42bd2cc3bf3088361eaa503ecae24",
   "export_file": "demo-dataset-synth_committed_replay.csv",
   "export_file_sha256": "11c76b128750a42828fa8d0a3177b259c9166a2ca3ecee09f61c5981cdab0f5e",
-  "source_manifest_hash": ""
+  "source_manifest_hash": "d7dad5310137e31a80c584441557eb95367e7d992e351b92c54eb95c4f28dcec:3bad12382ca8230345d866541159a16b8576bb65a11efb20ec2fe76befd2e9c4"
 }

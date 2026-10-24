@@ -7,6 +7,12 @@ import numpy as np
 import statsmodels.api as sm
 
 
+def _sanitize_float(val: Optional[float], default: Optional[float] = 0.0) -> Optional[float]:
+    if val is None or np.isnan(val) or np.isinf(val):
+        return default
+    return float(val)
+
+
 def fit_ols_with_hac(
     X: np.ndarray,
     y: np.ndarray,
@@ -44,19 +50,19 @@ def fit_ols_with_hac(
     for i, name in enumerate(names):
         if i < len(hac_results.params):
             coefs[name] = {
-                "coefficient": float(hac_results.params[i]),
-                "std_error_hac": float(hac_results.bse[i]),
-                "t_stat": float(hac_results.tvalues[i]),
-                "p_value": float(hac_results.pvalues[i]),
+                "coefficient": _sanitize_float(hac_results.params[i], 0.0),
+                "std_error_hac": _sanitize_float(hac_results.bse[i], 0.0),
+                "t_stat": _sanitize_float(hac_results.tvalues[i], 0.0),
+                "p_value": _sanitize_float(hac_results.pvalues[i], 1.0),
             }
 
     return {
         "nobs": int(T),
-        "r2_in_sample": float(results.rsquared),
+        "r2_in_sample": _sanitize_float(results.rsquared, 0.0),
         "max_lags": int(max_lags),
         "coefficients": coefs,
-        "aic": float(results.aic),
-        "bic": float(results.bic),
+        "aic": _sanitize_float(results.aic, 0.0),
+        "bic": _sanitize_float(results.bic, 0.0),
     }
 
 

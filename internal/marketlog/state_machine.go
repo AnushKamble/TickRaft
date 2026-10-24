@@ -122,6 +122,11 @@ func (sm *MarketLogStateMachine) applyAppendBatch(cmd *marketlogpb.AppendEventBa
 		return nil, ErrDatasetAlreadyFinalized
 	}
 
+	// 0. Enforce bounded batch size (Section 9)
+	if len(cmd.Events) == 0 || len(cmd.Events) > MaxEventsPerBatch {
+		return nil, ErrInvalidBatchSize
+	}
+
 	// 1. Check idempotency contract
 	isDuplicate, err := sm.idempotency.CheckAndRecord(
 		cmd.BatchId,

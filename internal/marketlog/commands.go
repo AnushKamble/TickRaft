@@ -3,9 +3,18 @@ package marketlog
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"google.golang.org/protobuf/proto"
 	marketlogpb "tickraft/proto/marketlog"
+)
+
+const (
+	MaxEventsPerBatch = 10000
+)
+
+var (
+	ErrInvalidBatchSize = errors.New("batch event count must be between 1 and 10000")
 )
 
 // Helper to wrap commands into raftpb.LogEntry data

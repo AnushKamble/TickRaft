@@ -111,14 +111,15 @@ func main() {
 	fileHash := hex.EncodeToString(hExport.Sum(nil))
 
 	manifest := ExportManifest{
-		DatasetID:        *datasetID,
-		ExportTime:       time.Now().UTC().Format(time.RFC3339),
-		EventCount:       resp.EventCount,
-		SeqStart:         resp.SeqStart,
-		SeqEnd:           resp.SeqEnd,
-		RollingDigest:    resp.RollingDigest,
-		ExportFile:       exportFileName,
-		ExportFileSHA256: fileHash,
+		DatasetID:          *datasetID,
+		ExportTime:         time.Now().UTC().Format(time.RFC3339),
+		EventCount:         resp.EventCount,
+		SeqStart:           resp.SeqStart,
+		SeqEnd:             resp.SeqEnd,
+		RollingDigest:      resp.RollingDigest,
+		ExportFile:         exportFileName,
+		ExportFileSHA256:   fileHash,
+		SourceManifestHash: resp.SourceManifestHash,
 	}
 
 	manifestBytes, _ := json.MarshalIndent(manifest, "", "  ")
