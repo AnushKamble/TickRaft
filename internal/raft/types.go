@@ -70,9 +70,9 @@ func (RealClock) NowNano() int64 {
 
 // NodeConfig holds static cluster configuration for a Raft node.
 type NodeConfig struct {
-	ID                  string
-	Peers               []string
-	ElectionTimeoutMin  int64 // Nanoseconds
-	ElectionTimeoutMax  int64 // Nanoseconds
-	HeartbeatInterval   int64 // Nanoseconds
+	ID                 string
+	Peers              []string
+	ElectionTimeoutMin int64 // Nanoseconds
+	ElectionTimeoutMax int64 // Nanoseconds
+	HeartbeatInterval  int64 // Nanoseconds
 }

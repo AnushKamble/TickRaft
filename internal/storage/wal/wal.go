@@ -3,10 +3,10 @@ package wal
 import (
 	"encoding/binary"
 	"fmt"
+	"google.golang.org/protobuf/proto"
 	"os"
 	"path/filepath"
 	"sync"
-	"google.golang.org/protobuf/proto"
 	"tickraft/internal/storage/hardstate"
 	raftpb "tickraft/proto/raft"
 )

@@ -20,11 +20,11 @@ var (
 )
 
 type ResilientClusterClient struct {
-	mu           sync.RWMutex
-	clusterAddrs []string
+	mu            sync.RWMutex
+	clusterAddrs  []string
 	currentLeader string
-	conns        map[string]*grpc.ClientConn
-	clients      map[string]marketlogpb.MarketLogServiceClient
+	conns         map[string]*grpc.ClientConn
+	clients       map[string]marketlogpb.MarketLogServiceClient
 }
 
 func NewResilientClusterClient(clusterAddrs []string) *ResilientClusterClient {

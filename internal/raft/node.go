@@ -54,7 +54,7 @@ type RaftNode struct {
 	rng *rand.Rand
 
 	// Channel for serializing all state mutations via actor loop
-	msgChan chan actorMsg
+	msgChan  chan actorMsg
 	stopChan chan struct{}
 	stopped  bool
 }
@@ -96,15 +96,15 @@ type statusQueryMsg struct {
 }
 
 type NodeStatus struct {
-	ID            string
-	Role          Role
-	Term          uint64
-	Leader        string
-	CommitIndex   uint64
-	LastApplied   uint64
-	LastLogIndex  uint64
-	LastLogTerm   uint64
-	LogLength     int
+	ID           string
+	Role         Role
+	Term         uint64
+	Leader       string
+	CommitIndex  uint64
+	LastApplied  uint64
+	LastLogIndex uint64
+	LastLogTerm  uint64
+	LogLength    int
 }
 
 func NewRaftNode(

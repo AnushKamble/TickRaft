@@ -4,9 +4,9 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"google.golang.org/protobuf/proto"
 	"io"
 	"os"
-	"google.golang.org/protobuf/proto"
 	raftpb "tickraft/proto/raft"
 )
 

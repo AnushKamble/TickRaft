@@ -206,10 +206,10 @@ func TestFinalizeDataset(t *testing.T) {
 
 	// Finalize with correct expected values
 	finCmd := &marketlogpb.FinalizeDatasetCommand{
-		DatasetId:              "d-fin",
-		ExpectedEvents:         1,
-		FinalSeq:               1,
-		ExpectedRollingDigest:  computedDigest,
+		DatasetId:             "d-fin",
+		ExpectedEvents:        1,
+		FinalSeq:              1,
+		ExpectedRollingDigest: computedDigest,
 	}
 	fBytes, _ := marketlog.EncodeStateMachineCommand(marketlogpb.StateMachineCommand_FINALIZE_DATASET, finCmd)
 	finResp, err := sm.Apply(&raftpb.LogEntry{Index: 3, Term: 1, Data: fBytes})

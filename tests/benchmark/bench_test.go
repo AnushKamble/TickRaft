@@ -19,26 +19,26 @@ import (
 )
 
 type BenchmarkRunResult struct {
-	BatchSize         int       `json:"batch_size"`
-	TotalEvents       int       `json:"total_events"`
-	TotalBatches      int       `json:"total_batches"`
-	DurationMs        float64   `json:"duration_ms"`
-	EventsPerSec      float64   `json:"events_per_sec"`
-	BatchesPerSec     float64   `json:"batches_per_sec"`
-	LatencyMeanMs     float64   `json:"latency_mean_ms"`
-	LatencyP50Ms      float64   `json:"latency_p50_ms"`
-	LatencyP95Ms      float64   `json:"latency_p95_ms"`
-	LatencyP99Ms      float64   `json:"latency_p99_ms"`
-	TotalWALBytes     int64     `json:"total_wal_bytes"`
+	BatchSize     int     `json:"batch_size"`
+	TotalEvents   int     `json:"total_events"`
+	TotalBatches  int     `json:"total_batches"`
+	DurationMs    float64 `json:"duration_ms"`
+	EventsPerSec  float64 `json:"events_per_sec"`
+	BatchesPerSec float64 `json:"batches_per_sec"`
+	LatencyMeanMs float64 `json:"latency_mean_ms"`
+	LatencyP50Ms  float64 `json:"latency_p50_ms"`
+	LatencyP95Ms  float64 `json:"latency_p95_ms"`
+	LatencyP99Ms  float64 `json:"latency_p99_ms"`
+	TotalWALBytes int64   `json:"total_wal_bytes"`
 }
 
 type FullBenchmarkReport struct {
 	Environment struct {
-		OS          string `json:"os"`
-		Arch        string `json:"arch"`
-		NumCPU      int    `json:"num_cpu"`
-		GoVersion   string `json:"go_version"`
-		Timestamp   string `json:"timestamp"`
+		OS        string `json:"os"`
+		Arch      string `json:"arch"`
+		NumCPU    int    `json:"num_cpu"`
+		GoVersion string `json:"go_version"`
+		Timestamp string `json:"timestamp"`
 	} `json:"environment"`
 	DirectReplay struct {
 		TotalEvents  int     `json:"total_events"`

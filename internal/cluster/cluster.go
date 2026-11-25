@@ -125,7 +125,7 @@ func (c *LocalCluster) startNodeLocked(id string, index int) error {
 		Peers:              peers,
 		ElectionTimeoutMin: int64(150+index*30) * 1_000_000, // staggered min
 		ElectionTimeoutMax: int64(300+index*30) * 1_000_000, // staggered max
-		HeartbeatInterval:  50 * 1_000_000,                   // 50ms
+		HeartbeatInterval:  50 * 1_000_000,                  // 50ms
 	}
 
 	seed := time.Now().UnixNano() + int64(index*7919+42)

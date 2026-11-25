@@ -12,11 +12,11 @@ import (
 )
 
 var (
-	ErrSequenceGap            = errors.New("sequence gap detected in market event batch")
-	ErrTimestampRegression    = errors.New("timestamp regression detected in market events")
-	ErrInvalidOrderBook       = errors.New("order book invariant violated: bid_price >= ask_price or zero size")
-	ErrManifestMismatch       = errors.New("finalized dataset manifest mismatch (event count, sequence, or rolling digest)")
-	ErrDatasetAlreadyFinalized= errors.New("dataset has already been finalized")
+	ErrSequenceGap             = errors.New("sequence gap detected in market event batch")
+	ErrTimestampRegression     = errors.New("timestamp regression detected in market events")
+	ErrInvalidOrderBook        = errors.New("order book invariant violated: bid_price >= ask_price or zero size")
+	ErrManifestMismatch        = errors.New("finalized dataset manifest mismatch (event count, sequence, or rolling digest)")
+	ErrDatasetAlreadyFinalized = errors.New("dataset has already been finalized")
 )
 
 type MarketLogStateMachine struct {

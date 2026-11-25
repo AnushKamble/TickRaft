@@ -103,11 +103,11 @@ func main() {
 	// 3. FinalizeDataset command
 	log.Printf("[TickRaft-Import] Finalizing dataset %s with digest %s...", *datasetID, rollingDigest[:8])
 	finCmd := &marketlogpb.FinalizeDatasetCommand{
-		DatasetId:              *datasetID,
-		ExpectedEvents:         uint64(totalEvents),
-		FinalSeq:               uint64(totalEvents),
-		ExpectedRollingDigest:  rollingDigest,
-		SourceManifestHash:     msgHash + ":" + bookHash,
+		DatasetId:             *datasetID,
+		ExpectedEvents:        uint64(totalEvents),
+		FinalSeq:              uint64(totalEvents),
+		ExpectedRollingDigest: rollingDigest,
+		SourceManifestHash:    msgHash + ":" + bookHash,
 	}
 
 	if err := client.FinalizeDataset(ctx, finCmd); err != nil {

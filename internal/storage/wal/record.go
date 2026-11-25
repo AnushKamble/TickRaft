@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	RecordHeaderSize = 10 // 4B Length + 2B Type + 4B CRC32
+	RecordHeaderSize = 10               // 4B Length + 2B Type + 4B CRC32
 	MaxRecordPayload = 16 * 1024 * 1024 // 16 MB bounded maximum
 	RecordTypeEntry  = uint16(1)
 	RecordTypeTrunc  = uint16(2)
@@ -43,8 +43,8 @@ func EncodeRecord(recType uint16, payload []byte) ([]byte, error) {
 
 	// 3. CRC32 computed over Type + Payload
 	h := crc32.NewIEEE()
-	h.Write(buf[4:6])       // Type
-	h.Write(payload)        // Payload
+	h.Write(buf[4:6]) // Type
+	h.Write(payload)  // Payload
 	checksum := h.Sum32()
 
 	binary.BigEndian.PutUint32(buf[6:10], checksum)

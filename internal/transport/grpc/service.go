@@ -117,15 +117,15 @@ func (s *MarketLogServiceServer) GetClusterStatus(
 	manifest := s.sm.GetManifest()
 
 	return &marketlogpb.ClusterStatusResponse{
-		NodeId:             st.ID,
-		Role:               string(st.Role),
-		Term:               st.Term,
-		LeaderId:           st.Leader,
-		CommitIndex:        st.CommitIndex,
-		LastApplied:        st.LastApplied,
-		EventCount:         manifest.AppliedEvents,
-		LastAppliedDigest:  manifest.RollingDigest,
-		StatusError:        "",
+		NodeId:            st.ID,
+		Role:              string(st.Role),
+		Term:              st.Term,
+		LeaderId:          st.Leader,
+		CommitIndex:       st.CommitIndex,
+		LastApplied:       st.LastApplied,
+		EventCount:        manifest.AppliedEvents,
+		LastAppliedDigest: manifest.RollingDigest,
+		StatusError:       "",
 	}, nil
 }
 
