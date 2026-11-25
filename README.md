@@ -1,4 +1,9 @@
-# TickRaft: Replicated Market-Data Replay & Microstructure Research Engine
+﻿# TickRaft: Replicated Market-Data Replay & Microstructure Research Engine
+
+[![CI](https://github.com/AnushKamble/TickRaft/actions/workflows/ci.yml/badge.svg)](https://github.com/AnushKamble/TickRaft/actions/workflows/ci.yml)
+[![Go Version](https://img.shields.io/badge/go-1.22%2B-blue.svg)](https://golang.org)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 **TickRaft** is a standalone, dual-axis distributed systems and quantitative research engine. It builds a three-node Raft consensus cluster from scratch in Go to replicate and order market-data event batches with physical write-ahead log (WAL) durability, then feeds only a verified committed export into a leak-resistant Python/Polars microstructure research pipeline.
 
@@ -50,7 +55,7 @@ Rather than building an arbitrary key-value store or running quantitative analyt
 - **Election Safety:** At most one leader per term across all random seeds.
 - **Durable Hard-State:** `currentTerm` and `votedFor` are fsynced atomically before sending vote responses.
 - **Log Matching & Conflict Repair:** Followers verify `prevLogIndex` and `prevLogTerm`. Uncommitted suffixes are truncated; committed entries are never touched.
-- **Current-Term Commitment (Raft §5.4.2):** Leaders advance commitIndex only on entries from their current term.
+- **Current-Term Commitment (Raft Â§5.4.2):** Leaders advance commitIndex only on entries from their current term.
 - **Minority Partition Fail-Closed:** A minority partition cannot commit new writes or acknowledge success.
 - **Replica Convergence:** Healed nodes synchronize on matching applied indices, event counts, and rolling SHA-256 digests.
 
@@ -130,7 +135,7 @@ TickRaft does not commit proprietary market data. To ingest an authorized LOBSTE
 ```bash
 python python/tickraft_research/reports/build_report.py --export-csv=data/export/REAL-AAPL-2026_committed_replay.csv --manifest=data/export/REAL-AAPL-2026_manifest.json --output-dir=results
 ```
-*If external licensed data is not available on the host machine, empirical results are marked `NOT RUN — real data unavailable`.*
+*If external licensed data is not available on the host machine, empirical results are marked `NOT RUN â€” real data unavailable`.*
 
 ---
 
