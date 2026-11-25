@@ -17,16 +17,16 @@ def compute_trade_volume_imbalance(df: pl.DataFrame) -> pl.Series:
     Other events (1: submission, 2: cancel, 3: delete, 6: cross, 7: halt) contribute 0.
     """
     is_execution = (df["event_type"] == 4) | (df["event_type"] == 5)
-    
+
     # Aggressor sign is opposite of resting order direction
     # resting = +1 (buy) => aggressor = -1 (sell)
     # resting = -1 (sell) => aggressor = +1 (buy)
     aggressor_sign = -df["direction"]
-    
+
     signed_vol = pl.when(is_execution) \
                    .then((aggressor_sign * df["size"]).cast(pl.Float64)) \
                    .otherwise(0.0)
-                   
+
     return signed_vol.alias("tvi")
 
 

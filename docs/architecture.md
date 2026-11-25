@@ -15,11 +15,11 @@ flowchart TD
         CLI -->|AppendEventBatch gRPC| N1["Node 1 (Leader)"]
         N1 <-->|AppendEntries / RequestVote| N2["Node 2 (Follower)"]
         N1 <-->|AppendEntries / RequestVote| N3["Node 3 (Follower)"]
-        
+
         N1 --> WAL1["WAL & HardState (fsync on commit)"]
         N2 --> WAL2["WAL & HardState (fsync on commit)"]
         N3 --> WAL3["WAL & HardState (fsync on commit)"]
-        
+
         N1 --> SM1["MarketLog Replicated State Machine"]
         N2 --> SM2["MarketLog Replicated State Machine"]
         N3 --> SM3["MarketLog Replicated State Machine"]

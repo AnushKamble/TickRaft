@@ -75,7 +75,7 @@ def lag_sensitivity_analysis(
     sensitivity = []
     T = len(y)
     valid_lags = [lag for lag in lags_to_test if lag < T - 1]
-    
+
     for lag in valid_lags:
         res = fit_ols_with_hac(X, y, max_lags=lag)
         sensitivity.append({

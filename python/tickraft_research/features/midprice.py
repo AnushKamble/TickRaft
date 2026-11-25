@@ -23,12 +23,12 @@ def build_regular_grid_1s(
     - If a bucket has no events, forward-fills the previous mid-price (if enabled), while flow features are 0.
     """
     df_with_mid = df.with_columns(compute_event_mid_price(df))
-    
+
     # Calculate integer second timestamp
     df_with_sec = df_with_mid.with_columns(
         (pl.col("timestamp_ns") // 1_000_000_000).alias("second_bin")
     )
-    
+
     # Aggregation expressions
     agg_exprs = [
         pl.col("mid_price").last().alias("mid_price"),
@@ -37,9 +37,9 @@ def build_regular_grid_1s(
     for lvl in range(1, levels + 1):
         if f"ofi_l{lvl}" in df.columns:
             agg_exprs.append(pl.col(f"ofi_l{lvl}").sum().alias(f"ofi_l{lvl}_sum"))
-            
+
     grid_df = df_with_sec.group_by("second_bin").agg(agg_exprs).sort("second_bin")
-    
+
     if forward_fill and len(grid_df) > 1:
         # Create complete sequence of seconds from min to max
         min_sec = grid_df["second_bin"].min()
@@ -48,10 +48,10 @@ def build_regular_grid_1s(
             "second_bin": list(range(min_sec, max_sec + 1))
         })
         grid_df = all_seconds.join(grid_df, on="second_bin", how="left")
-        
+
         # Forward fill mid-price
         grid_df = grid_df.with_columns(pl.col("mid_price").forward_fill())
-        
+
         # Fill zero for missing flow sums
         fill_zeros = [pl.col("tvi_sum").fill_null(0.0)]
         for lvl in range(1, levels + 1):
@@ -59,7 +59,7 @@ def build_regular_grid_1s(
             if col_name in grid_df.columns:
                 fill_zeros.append(pl.col(col_name).fill_null(0.0))
         grid_df = grid_df.with_columns(fill_zeros)
-        
+
     return grid_df
 
 

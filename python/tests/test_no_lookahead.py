@@ -30,7 +30,7 @@ def test_features_invariant_to_future_perturbations():
     # Create perturbed dataset where all events after row 5 are radically changed
     cutoff = 5
     perturbed_df = df.clone()
-    
+
     # Mutate prices and sizes after cutoff
     perturbed_df = perturbed_df.with_columns([
         pl.when(pl.col("source_seq") > cutoff + 1)

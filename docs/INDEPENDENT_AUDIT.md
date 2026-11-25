@@ -1,8 +1,8 @@
 # TickRaft — Independent Skeptical Code & Protocol Audit
 
-**Audit Date:** 2026-10-24  
-**Auditor Role:** Independent Senior Distributed Systems SWE & Quantitative Research Auditor  
-**Audit Mandate:** Skeptical line-by-line inspection, adversarial bug hunting, and verification of runtime behavior.  
+**Audit Date:** 2026-10-24
+**Auditor Role:** Independent Senior Distributed Systems SWE & Quantitative Research Auditor
+**Audit Mandate:** Skeptical line-by-line inspection, adversarial bug hunting, and verification of runtime behavior.
 **Repository:** `TickRaft` (`C:\Users\anush\OneDrive\Desktop\Project\Projects\QR\MicroStruct`)
 
 ---
@@ -40,7 +40,7 @@ No claim of passing was accepted based on compilation or documentation alone. Al
   - `cmd/tickraft-export/main.go` lines 113–122
   - `results/research_summary.json` line 11
 - **Specification Mandate (Sections 6 & 11):**
-  > *"A committed export whose source hash, count, source-sequence range, and rolling digest are verified."*  
+  > *"A committed export whose source hash, count, source-sequence range, and rolling digest are verified."*
   > *"The research pipeline consumes an export generated only from committed/applied log entries. It must compare the export manifest with the normalized source manifest before running a study."*
 - **Defect Description:**
   `message ExportCommittedResponse` defined in `marketlog.proto` lacked the `source_manifest_hash` field. Even though the state machine recorded `sm.sourceManifestHash` upon `BeginDataset`, the gRPC export endpoint could not return it. Consequently, `cmd/tickraft-export` exported a manifest with `"source_manifest_hash": ""`. The downstream research pipeline was unable to audit provenance against the source CSV hash.

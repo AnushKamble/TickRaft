@@ -4,7 +4,7 @@
 - **Status:** Accepted
 - **Context:** The system needs distributed replication for market-data event batches. Standard libraries (`etcd/raft`, `hashicorp/raft`) abstract consensus internals.
 - **Decision:** Implement the complete Raft consensus protocol from scratch in Go per Ongaro & Ousterhout (2014).
-- **Rationale:** 
+- **Rationale:**
   1. Full control over state machine application, term transitions, and current-term commit enforcement.
   2. Eliminates opaque abstractions, allowing direct verification of invariants (majority quorum, monotonic commitIndex, atomic hard-state fsync, uncommitted suffix truncation).
   3. Enables direct deterministic network and fault simulation with logical virtual clocks.
@@ -13,7 +13,7 @@
 - **Status:** Accepted
 - **Context:** Raft supports dynamic membership changes (joint consensus), which adds substantial protocol complexity.
 - **Decision:** Fix cluster membership at exactly 3 nodes (`node-1`, `node-2`, `node-3`) with a static quorum threshold of 2.
-- **Rationale:** 
+- **Rationale:**
   1. A 3-node cluster provides single-fault tolerance (tolerates 1 crashed/isolated node) which completely proves quorum safety.
   2. Keeps focus on core market-event ordering, WAL durability, fault recovery, and microstructure research rather than distributed re-configuration.
 
@@ -45,7 +45,7 @@
 ## ADR-006: Local Multi-Process and Docker Compose Deployment Strategy
 - **Status:** Accepted
 - **Context:** The development and testing environment runs on Windows without an active Docker daemon in the system path.
-- **Decision:** 
+- **Decision:**
   1. Provide full `Dockerfile` and `docker-compose.yml` configurations for standard containerized deployment.
   2. For local testing, verification, and automated test suites, provide a native multi-process orchestration module (`internal/cluster`) where 3 distinct OS processes run on loopback ports (e.g. 50051, 50052, 50053) with separate data directories.
 - **Rationale:** Guarantees complete end-to-end multi-process distributed systems verification regardless of local Docker availability.

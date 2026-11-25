@@ -1,8 +1,8 @@
 # TickRaft — Technical Design Memo: Optional Extensions & Architectural Roadmap
 
-**Document Reference:** `docs/extensions_memo.md`  
-**Phase:** Phase 13 — Optional Extension Gate  
-**Author:** Distributed Systems SWE & Quantitative Research Engineer  
+**Document Reference:** `docs/extensions_memo.md`
+**Phase:** Phase 13 — Optional Extension Gate
+**Author:** Distributed Systems SWE & Quantitative Research Engineer
 **Status:** **APPROVED & RECORDED**
 
 ---
